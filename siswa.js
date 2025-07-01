@@ -38,15 +38,21 @@ async function loadRiwayat() {
 window.absen = async function (status) {
   const tanggal = new Date().toISOString().split("T")[0];
   const now = new Date();
-  const jam = now.toTimeString().split(":".slice(0, 2).join(":"));
 
   const { data: jamData } = await supabase.from("pengaturan_jam").select("*").eq("id", 1).single();
   if (!jamData) return alert("Jam belum diatur oleh admin");
 
-  const jamSekarang = now.toTimeString().split(":".slice(0, 2).join(":"));
+  const jamSekarang = now.toTimeString().slice(0, 5); // format HH:MM
 
-  const isJamMasuk = status === "masuk" && jamSekarang >= jamData.jam_masuk_dari && jamSekarang <= jamData.jam_masuk_sampai;
-  const isJamKeluar = status === "keluar" && jamSekarang >= jamData.jam_keluar_dari && jamSekarang <= jamData.jam_keluar_sampai;
+  const isJamMasuk =
+    status === "masuk" &&
+    jamSekarang >= jamData.jam_masuk_dari &&
+    jamSekarang <= jamData.jam_masuk_sampai;
+
+  const isJamKeluar =
+    status === "keluar" &&
+    jamSekarang >= jamData.jam_keluar_dari &&
+    jamSekarang <= jamData.jam_keluar_sampai;
 
   if (!isJamMasuk && !isJamKeluar) return alert("Bukan waktu absensi yang diperbolehkan!");
 
