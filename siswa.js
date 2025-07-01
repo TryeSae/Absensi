@@ -28,8 +28,8 @@ async function loadRiwayat() {
   tbody.innerHTML = "";
 
   data.forEach(item => {
+    const keterangan = item.status === "Masuk" ? "✅ Absen Masuk" : "✅ Absen Keluar";
     const row = document.createElement("tr");
-    const keterangan = item.status === "masuk" ? "✅ Absen Masuk" : "✅ Absen Keluar";
     row.innerHTML = `
       <td>${item.tanggal}</td>
       <td>${item.status}</td>
@@ -38,7 +38,6 @@ async function loadRiwayat() {
     tbody.appendChild(row);
   });
 }
-
 
 window.absen = async function () {
   const tanggal = new Date().toISOString().split("T")[0];
@@ -50,9 +49,9 @@ window.absen = async function () {
 
   let status = "";
   if (jamSekarang >= jamData.jam_masuk_dari && jamSekarang <= jamData.jam_masuk_sampai) {
-    status = "masuk";
+    status = "Masuk";
   } else if (jamSekarang >= jamData.jam_keluar_dari && jamSekarang <= jamData.jam_keluar_sampai) {
-    status = "keluar";
+    status = "Keluar";
   } else {
     return alert("Bukan waktu absensi yang diperbolehkan!");
   }
