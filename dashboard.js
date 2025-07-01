@@ -45,17 +45,17 @@ async function loadRiwayat() {
     .select("*, users(nama)")
     .order("tanggal", { ascending: false });
 
-  const list = document.getElementById("riwayat");
-  list.innerHTML = "";
+  const tbody = document.getElementById("riwayat");
+  tbody.innerHTML = "";
   data.forEach(absen => {
-    const li = document.createElement("li");
-    li.textContent = `${absen.users.nama} - ${absen.tanggal} - ${absen.status}`;
-    list.appendChild(li);
+    const row = document.createElement("tr");
+    row.innerHTML = `<td>${absen.users.nama}</td><td>${absen.tanggal}</td><td>${absen.status}</td>`;
+    tbody.appendChild(row);
   });
 }
 
 async function loadJam() {
-  const { data, error } = await supabase.from("pengaturan_jam").select("*").eq("id", 1).single();
+  const { data } = await supabase.from("pengaturan_jam").select("*").eq("id", 1).single();
   if (data) {
     document.getElementById("masukDari").value = data.jam_masuk_dari;
     document.getElementById("masukSampai").value = data.jam_masuk_sampai;
@@ -65,11 +65,12 @@ async function loadJam() {
 }
 
 async function loadSiswa() {
-  const { data, error } = await supabase.from("users").select("nama, email").eq("role", "siswa");
+  const { data } = await supabase.from("users").select("nama, email").eq("role", "siswa");
   const list = document.getElementById("daftarSiswa");
   list.innerHTML = "";
   data.forEach(user => {
     const li = document.createElement("li");
+    li.className = "list-group-item";
     li.textContent = `${user.nama} (${user.email})`;
     list.appendChild(li);
   });
