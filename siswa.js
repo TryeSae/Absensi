@@ -1,6 +1,6 @@
 import { supabase } from "./config.js";
 
-// Validasi user siswa
+// Validasi user
 const user = JSON.parse(localStorage.getItem("user"));
 if (!user || user.role !== "siswa") window.location.href = "index.html";
 
@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadRiwayat();
 });
 
-// Ambil pengaturan jam absensi
+// Tampilkan jam absen
 async function loadJam() {
   const { data } = await supabase.from("pengaturan_jam").select("*").eq("id", 1).single();
   if (data) {
@@ -31,13 +31,13 @@ async function loadRiwayat() {
   const tbody = document.getElementById("riwayatSiswa");
   tbody.innerHTML = "";
 
-  if (data.length > 0) {
-    const today = new Date().toISOString().split("T")[0];
-    const hariIni = data.find(item => item.tanggal === today);
-    if (hariIni) {
-      document.getElementById("statusHariIni").textContent = hariIni.jenis ? `Sudah Absen (${hariIni.jenis})` : "Sudah Absen";
-      document.getElementById("statusHariIni").classList.replace("bg-secondary", "bg-success");
-    }
+  // Tampilkan status hari ini
+  const today = new Date().toISOString().split("T")[0];
+  const absenHariIni = data.filter(item => item.tanggal === today);
+  if (absenHariIni.length > 0) {
+    const statusList = absenHariIni.map(a => a.jenis).join(" & ");
+    document.getElementById("statusHariIni").textContent = `Sudah Absen (${statusList})`;
+    document.getElementById("statusHariIni").classList.replace("bg-secondary", "bg-success");
   }
 
   data.forEach(item => {
@@ -52,15 +52,16 @@ async function loadRiwayat() {
   });
 }
 
-// Fungsi Absensi
+// Fungsi absen
 window.absen = async function () {
   const tanggal = new Date().toISOString().split("T")[0];
   const now = new Date();
-  const jamSekarang = now.toTimeString().slice(0, 5); // HH:MM
+  const jamSekarang = now.toTimeString().slice(0, 5); // format HH:MM
 
   const { data: jamData } = await supabase.from("pengaturan_jam").select("*").eq("id", 1).single();
   if (!jamData) return alert("Jam belum diatur oleh admin");
 
+  // Tentukan jenis absen berdasarkan waktu
   let jenis = "";
   if (jamSekarang >= jamData.jam_masuk_dari && jamSekarang <= jamData.jam_masuk_sampai) {
     jenis = "Masuk";
@@ -70,11 +71,23 @@ window.absen = async function () {
     return alert("Bukan waktu absensi yang diperbolehkan!");
   }
 
+  // Cek apakah sudah absen jenis ini hari ini
+  const { data: existing } = await supabase
+    .from("absensi")
+    .select("*")
+    .eq("user_id", user.id)
+    .eq("tanggal", tanggal)
+    .eq("jenis", jenis);
+
+  if (existing && existing.length > 0) {
+    return alert(`Anda sudah melakukan absen ${jenis} hari ini.`);
+  }
+
   const { error } = await supabase.from("absensi").insert({
     user_id: user.id,
     tanggal,
-    status: "Hadir", // sesuai constraint Supabase
-    jenis // Masuk/Keluar
+    status: "Hadir",
+    jenis
   });
 
   if (error) return alert("Gagal absen");
