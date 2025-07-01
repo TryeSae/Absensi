@@ -5,6 +5,8 @@ if (!user || user.role !== "admin") window.location.href = "index.html";
 
 document.addEventListener("DOMContentLoaded", () => {
   loadRiwayat();
+  loadJam();
+  loadSiswa();
 });
 
 window.tambahSiswa = async function () {
@@ -14,7 +16,10 @@ window.tambahSiswa = async function () {
 
   const { error } = await supabase.from("users").insert({ nama, email, password, role: "siswa" });
   if (error) alert("Gagal tambah siswa");
-  else alert("Berhasil tambah siswa");
+  else {
+    alert("Berhasil tambah siswa");
+    loadSiswa();
+  }
 };
 
 window.simpanJam = async function () {
@@ -45,6 +50,27 @@ async function loadRiwayat() {
   data.forEach(absen => {
     const li = document.createElement("li");
     li.textContent = `${absen.users.nama} - ${absen.tanggal} - ${absen.status}`;
+    list.appendChild(li);
+  });
+}
+
+async function loadJam() {
+  const { data, error } = await supabase.from("pengaturan_jam").select("*").eq("id", 1).single();
+  if (data) {
+    document.getElementById("masukDari").value = data.jam_masuk_dari;
+    document.getElementById("masukSampai").value = data.jam_masuk_sampai;
+    document.getElementById("keluarDari").value = data.jam_keluar_dari;
+    document.getElementById("keluarSampai").value = data.jam_keluar_sampai;
+  }
+}
+
+async function loadSiswa() {
+  const { data, error } = await supabase.from("users").select("nama, email").eq("role", "siswa");
+  const list = document.getElementById("daftarSiswa");
+  list.innerHTML = "";
+  data.forEach(user => {
+    const li = document.createElement("li");
+    li.textContent = `${user.nama} (${user.email})`;
     list.appendChild(li);
   });
 }
