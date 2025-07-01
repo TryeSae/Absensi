@@ -29,10 +29,16 @@ async function loadRiwayat() {
 
   data.forEach(item => {
     const row = document.createElement("tr");
-    row.innerHTML = `<td>${item.tanggal}</td><td>${item.status}</td>`;
+    const keterangan = item.status === "masuk" ? "✅ Absen Masuk" : "✅ Absen Keluar";
+    row.innerHTML = `
+      <td>${item.tanggal}</td>
+      <td>${item.status}</td>
+      <td>${keterangan}</td>
+    `;
     tbody.appendChild(row);
   });
 }
+
 
 window.absen = async function () {
   const tanggal = new Date().toISOString().split("T")[0];
