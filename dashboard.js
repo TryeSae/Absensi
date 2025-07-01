@@ -9,6 +9,13 @@ document.addEventListener("DOMContentLoaded", () => {
   loadSiswa();
 });
 
+// Fungsi global penutup modal
+window.tutupModal = function(id) {
+  const modalEl = document.getElementById(id);
+  const modalInstance = bootstrap.Modal.getInstance(modalEl);
+  if (modalInstance) modalInstance.hide();
+};
+
 window.tambahSiswa = async function () {
   const nama = document.getElementById("nama").value;
   const email = document.getElementById("email").value;
@@ -19,6 +26,7 @@ window.tambahSiswa = async function () {
   else {
     alert("Berhasil tambah siswa");
     loadSiswa();
+    tutupModal("modalTambah");
   }
 };
 
@@ -38,6 +46,7 @@ window.simpanJam = async function () {
 
   alert("Jam berhasil disimpan");
   await loadJam();
+  tutupModal("modalJam");
 };
 
 async function loadJam() {
