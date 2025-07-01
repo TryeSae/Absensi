@@ -1,4 +1,3 @@
-// siswa.js
 import { supabase } from "./config.js";
 
 const user = JSON.parse(localStorage.getItem("user"));
@@ -35,26 +34,22 @@ async function loadRiwayat() {
   });
 }
 
-window.absen = async function (status) {
+window.absen = async function () {
   const tanggal = new Date().toISOString().split("T")[0];
   const now = new Date();
+  const jamSekarang = now.toTimeString().slice(0, 5); // format HH:MM
 
   const { data: jamData } = await supabase.from("pengaturan_jam").select("*").eq("id", 1).single();
   if (!jamData) return alert("Jam belum diatur oleh admin");
 
-  const jamSekarang = now.toTimeString().slice(0, 5); // format HH:MM
-
-  const isJamMasuk =
-    status === "masuk" &&
-    jamSekarang >= jamData.jam_masuk_dari &&
-    jamSekarang <= jamData.jam_masuk_sampai;
-
-  const isJamKeluar =
-    status === "keluar" &&
-    jamSekarang >= jamData.jam_keluar_dari &&
-    jamSekarang <= jamData.jam_keluar_sampai;
-
-  if (!isJamMasuk && !isJamKeluar) return alert("Bukan waktu absensi yang diperbolehkan!");
+  let status = "";
+  if (jamSekarang >= jamData.jam_masuk_dari && jamSekarang <= jamData.jam_masuk_sampai) {
+    status = "masuk";
+  } else if (jamSekarang >= jamData.jam_keluar_dari && jamSekarang <= jamData.jam_keluar_sampai) {
+    status = "keluar";
+  } else {
+    return alert("Bukan waktu absensi yang diperbolehkan!");
+  }
 
   const { error } = await supabase.from("absensi").insert({
     user_id: user.id,
@@ -64,6 +59,6 @@ window.absen = async function (status) {
 
   if (error) return alert("Gagal absen");
 
-  alert("Absensi berhasil");
+  alert(`Absensi ${status} berhasil`);
   loadRiwayat();
 };
