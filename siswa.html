@@ -38,10 +38,12 @@
       <div class="card-body text-center">
         <h5 class="card-title">Absensi Hari Ini</h5>
         <p class="mb-3">Silakan klik tombol sesuai kehadiran Anda</p>
+        <p>Status Hari Ini: <span id="statusHariIni" class="badge bg-secondary">Belum Absen</span></p>
         <div class="text-center">
-  <button onclick="absen()" class="btn btn-primary px-5">Absen</button>
-</div>
+          <button onclick="absen()" class="btn btn-primary px-5">Absen</button>
+        </div>
       </div>
+    </div>
     </div>
 
     <!-- Riwayat Absensi -->
@@ -54,6 +56,7 @@
               <tr>
                 <th>Tanggal</th>
                 <th>Status</th>
+                <th>Keterangan</th>
               </tr>
             </thead>
             <tbody id="riwayatSiswa"></tbody>
