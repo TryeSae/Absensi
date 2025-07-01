@@ -1,20 +1,24 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login Absensi</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script src="config.js"></script>
-  <script src="login.js" defer></script>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100 flex items-center justify-center h-screen">
-  <div class="bg-white p-6 rounded shadow-md w-full max-w-sm">
-    <h1 class="text-2xl font-bold mb-4 text-center">Login Absensi</h1>
-    <input type="email" id="email" placeholder="Email" class="w-full p-2 border rounded mb-2" />
-    <input type="password" id="password" placeholder="Password" class="w-full p-2 border rounded mb-4" />
-    <button id="loginBtn" class="w-full bg-blue-500 text-white py-2 rounded">Login</button>
-  </div>
-</body>
-</html>
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value.trim();
+
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('email', email)
+    .eq('password', password)
+    .single();
+
+  if (error || !data) {
+    alert('Email atau password salah!');
+    return;
+  }
+
+  localStorage.setItem('user', JSON.stringify(data));
+
+  if (data.role === 'admin') {
+    window.location.href = 'dashboard.html';
+  } else {
+    window.location.href = 'siswa.html';
+  }
+});
