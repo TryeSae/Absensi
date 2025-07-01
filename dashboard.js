@@ -69,14 +69,16 @@ async function loadRiwayat() {
     .order("tanggal", { ascending: false });
 
   const tbody = document.getElementById("riwayat");
-  const tbodyModal = document.getElementById("riwayatModal");
   tbody.innerHTML = "";
-  tbodyModal.innerHTML = "";
-
   data.forEach(absen => {
-    const row = `<tr><td>${absen.users.nama}</td><td>${absen.tanggal}</td><td>${absen.status}</td></tr>`;
-    tbody.innerHTML += row;
-    tbodyModal.innerHTML += row;
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${absen.users.nama}</td>
+      <td>${absen.tanggal}</td>
+      <td>${absen.status}</td>
+      <td>${absen.jenis ?? "-"}</td>
+    `;
+    tbody.appendChild(row);
   });
 }
 
