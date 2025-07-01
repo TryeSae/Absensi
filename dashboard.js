@@ -2,8 +2,6 @@ import { supabase } from "./config.js";
 
 const user = JSON.parse(localStorage.getItem("user"));
 if (!user || user.role !== "admin") window.location.href = "index.html";
-document.getElementById("jamMasukTampil").innerText = `${data.jam_masuk_dari} - ${data.jam_masuk_sampai}`;
-document.getElementById("jamKeluarTampil").innerText = `${data.jam_keluar_dari} - ${data.jam_keluar_sampai}`;
 
 document.addEventListener("DOMContentLoaded", () => {
   loadRiwayat();
@@ -39,22 +37,8 @@ window.simpanJam = async function () {
   });
 
   alert("Jam berhasil disimpan");
+  await loadJam();
 };
-
-async function loadRiwayat() {
-  const { data } = await supabase
-    .from("absensi")
-    .select("*, users(nama)")
-    .order("tanggal", { ascending: false });
-
-  const tbody = document.getElementById("riwayat");
-  tbody.innerHTML = "";
-  data.forEach(absen => {
-    const row = document.createElement("tr");
-    row.innerHTML = `<td>${absen.users.nama}</td><td>${absen.tanggal}</td><td>${absen.status}</td>`;
-    tbody.appendChild(row);
-  });
-}
 
 async function loadJam() {
   const { data } = await supabase.from("pengaturan_jam").select("*").eq("id", 1).single();
@@ -63,7 +47,28 @@ async function loadJam() {
     document.getElementById("masukSampai").value = data.jam_masuk_sampai;
     document.getElementById("keluarDari").value = data.jam_keluar_dari;
     document.getElementById("keluarSampai").value = data.jam_keluar_sampai;
+
+    document.getElementById("jamMasukTampil").innerText = `${data.jam_masuk_dari} - ${data.jam_masuk_sampai}`;
+    document.getElementById("jamKeluarTampil").innerText = `${data.jam_keluar_dari} - ${data.jam_keluar_sampai}`;
   }
+}
+
+async function loadRiwayat() {
+  const { data } = await supabase
+    .from("absensi")
+    .select("*, users(nama)")
+    .order("tanggal", { ascending: false });
+
+  const tbody = document.getElementById("riwayat");
+  const tbodyModal = document.getElementById("riwayatModal");
+  tbody.innerHTML = "";
+  tbodyModal.innerHTML = "";
+
+  data.forEach(absen => {
+    const row = `<tr><td>${absen.users.nama}</td><td>${absen.tanggal}</td><td>${absen.status}</td></tr>`;
+    tbody.innerHTML += row;
+    tbodyModal.innerHTML += row;
+  });
 }
 
 async function loadSiswa() {
@@ -75,17 +80,4 @@ async function loadSiswa() {
     row.innerHTML = `<td>${user.nama}</td><td>${user.email}</td>`;
     tbody.appendChild(row);
   });
-}
-async function loadJam() {
-  const { data } = await supabase.from("pengaturan_jam").select("*").eq("id", 1).single();
-  if (data) {
-    document.getElementById("masukDari").value = data.jam_masuk_dari;
-    document.getElementById("masukSampai").value = data.jam_masuk_sampai;
-    document.getElementById("keluarDari").value = data.jam_keluar_dari;
-    document.getElementById("keluarSampai").value = data.jam_keluar_sampai;
-
-    // 👇 ini bagian penting untuk card-nya
-    document.getElementById("jamMasukTampil").innerText = `${data.jam_masuk_dari} - ${data.jam_masuk_sampai}`;
-    document.getElementById("jamKeluarTampil").innerText = `${data.jam_keluar_dari} - ${data.jam_keluar_sampai}`;
-  }
 }
