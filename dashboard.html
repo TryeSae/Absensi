@@ -21,26 +21,7 @@
     <!-- Main Content -->
     <div class="p-4 flex-fill">
       <h1 class="mb-4">Dashboard Admin</h1>
-
-      <!-- Tambah Siswa -->
-      <div class="card mb-4">
-        <div class="card-body">
-          <h5 class="card-title">Tambah Siswa</h5>
-          <input type="text" id="nama" class="form-control mb-2" placeholder="Nama">
-          <input type="email" id="email" class="form-control mb-2" placeholder="Email">
-          <input type="text" id="password" class="form-control mb-3" placeholder="Password">
-          <button onclick="tambahSiswa()" class="btn btn-success">Tambah</button>
-        </div>
-      </div>
-
-      <div class="card mb-4">
-        <div class="card-body">
-          <h5 class="card-title">Data Siswa</h5>
-          <ul id="daftarSiswa" class="list-group"></ul>
-        </div>
-      </div>
-
-      <!-- Atur Jam -->
+     <!-- Atur Jam -->
       <div class="card mb-4">
         <div class="card-body">
           <h5 class="card-title">Atur Jam Absensi</h5>
@@ -61,6 +42,36 @@
           <button onclick="simpanJam()" class="btn btn-primary mt-3">Simpan Jam</button>
         </div>
       </div>
+      <!-- Tambah Siswa -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Tambah Siswa</h5>
+          <input type="text" id="nama" class="form-control mb-2" placeholder="Nama">
+          <input type="email" id="email" class="form-control mb-2" placeholder="Email">
+          <input type="text" id="password" class="form-control mb-3" placeholder="Password">
+          <button onclick="tambahSiswa()" class="btn btn-success">Tambah</button>
+        </div>
+      </div>
+
+      <!-- Data Siswa Table -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Data Siswa</h5>
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Nama</th>
+                  <th>Email</th>
+                </tr>
+              </thead>
+              <tbody id="daftarSiswa"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+     
 
       <!-- Riwayat Absensi -->
       <div class="card">
