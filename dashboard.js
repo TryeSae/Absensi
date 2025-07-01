@@ -66,12 +66,11 @@ async function loadJam() {
 
 async function loadSiswa() {
   const { data } = await supabase.from("users").select("nama, email").eq("role", "siswa");
-  const list = document.getElementById("daftarSiswa");
-  list.innerHTML = "";
+  const tbody = document.getElementById("daftarSiswa");
+  tbody.innerHTML = "";
   data.forEach(user => {
-    const li = document.createElement("li");
-    li.className = "list-group-item";
-    li.textContent = `${user.nama} (${user.email})`;
-    list.appendChild(li);
+    const row = document.createElement("tr");
+    row.innerHTML = `<td>${user.nama}</td><td>${user.email}</td>`;
+    tbody.appendChild(row);
   });
 }
