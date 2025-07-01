@@ -4,9 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login Absensi</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script src="config.js"></script>
-  <script src="login.js" defer></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100 flex items-center justify-center h-screen">
@@ -16,5 +13,7 @@
     <input type="password" id="password" placeholder="Password" class="w-full p-2 border rounded mb-4" />
     <button id="loginBtn" class="w-full bg-blue-500 text-white py-2 rounded">Login</button>
   </div>
+
+  <script type="module" src="login.js"></script>
 </body>
 </html>
